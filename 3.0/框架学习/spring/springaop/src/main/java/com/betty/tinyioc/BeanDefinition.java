@@ -1,11 +1,11 @@
-package com.betty.tinyaop.beans;
+package com.betty.tinyioc;
 
 /**
  * @author 白靖
  * @version 1.0.0
  * @ClassName BeanDefinition.java
  * @Description TODO
- * @createTime 2020年04月07日 17:26:00
+ * @createTime 2020年04月16日 15:33:00
  */
 public class BeanDefinition {
 
@@ -14,8 +14,6 @@ public class BeanDefinition {
     private Class beanClass;
 
     private String beanClassName;
-
-    private PropertyValues propertyValues = new PropertyValues();
 
     public BeanDefinition() {
     }
@@ -49,11 +47,4 @@ public class BeanDefinition {
         return bean;
     }
 
-    public PropertyValues getPropertyValues() {
-        return propertyValues;
-    }
-
-    public void setPropertyValues(PropertyValues propertyValues) {
-        this.propertyValues = propertyValues;
-    }
 }
