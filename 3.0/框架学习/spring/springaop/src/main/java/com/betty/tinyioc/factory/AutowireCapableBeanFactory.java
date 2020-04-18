@@ -1,6 +1,9 @@
 package com.betty.tinyioc.factory;
 
 import com.betty.tinyioc.BeanDefinition;
+import com.betty.tinyioc.PropertyValue;
+
+import java.lang.reflect.Field;
 
 /**
  * @author 白靖
@@ -16,16 +19,22 @@ public class AutowireCapableBeanFactory extends AbstractBeanFactory {
      * @return
      */
     @Override
-    protected Object doCreateBean(BeanDefinition beanDefinition) {
-        try {
-            Object bean = beanDefinition.getBeanClass().newInstance();
-            return bean;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+    protected Object doCreateBean(BeanDefinition beanDefinition) throws Exception {
+        Object bean = createBeanInstance(beanDefinition);
+        applyPropertyValues(bean, beanDefinition);
+        return bean;
+ }
+
+    private void applyPropertyValues(Object bean, BeanDefinition beanDefinition) throws Exception {
+        for (PropertyValue propertyValue : beanDefinition.getPropertyValues().getPropertyValues()) {
+            Field declaredField = bean.getClass().getDeclaredField(propertyValue.getName());
+            declaredField.setAccessible(true);
+            declaredField.set(bean, propertyValue.getValue());
         }
-        return null;
+    }
+
+    private Object createBeanInstance(BeanDefinition beanDefinition) throws Exception {
+        return beanDefinition.getBeanClass().newInstance();
     }
 
 }

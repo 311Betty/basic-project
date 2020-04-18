@@ -14,6 +14,7 @@ public class BeanDefinition {
     private Class beanClass;
 
     private String beanClassName;
+    private PropertyValues propertyValues = new PropertyValues();
 
     public BeanDefinition() {
     }
@@ -47,4 +48,11 @@ public class BeanDefinition {
         return bean;
     }
 
+    public PropertyValues getPropertyValues() {
+        return propertyValues;
+    }
+
+    public void setPropertyValues(PropertyValues propertyValues) {
+        this.propertyValues = propertyValues;
+    }
 }
