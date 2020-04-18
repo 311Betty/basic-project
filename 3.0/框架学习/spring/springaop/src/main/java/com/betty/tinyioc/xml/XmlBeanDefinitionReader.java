@@ -2,6 +2,7 @@ package com.betty.tinyioc.xml;
 
 import com.betty.tinyioc.AbstractBeanDefinitionReader;
 import com.betty.tinyioc.BeanDefinition;
+import com.betty.tinyioc.BeanReference;
 import com.betty.tinyioc.PropertyValue;
 import com.betty.tinyioc.io.ResourceLoader;
 import org.omg.CORBA.NO_IMPLEMENT;
@@ -71,9 +72,21 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             Node node = propertyNode.item(i);
             if (node instanceof Element) {
                 Element element = (Element) node;
-                String name = propertyEle.getAttribute("name");
-                String value    = propertyEle.getAttribute("value");
-                beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(name, value));
+                String name = element.getAttribute("name");
+                String value    = element.getAttribute("value");
+                if (value != null && value.length() > 0) {
+                    beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(name,value));
+                }
+                else {
+                    String ref = propertyEle.getAttribute("ref");
+                    if (ref == null || ref.length() == 0) {
+                        throw new IllegalArgumentException("Configuration problem: <property> element for property ' " + name + "' must specify a ref or value");
+                    }
+                    BeanReference beanReference = new BeanReference(ref);
+                    beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(name, beanReference));
+
+                }
+
 
             }
         }

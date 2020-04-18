@@ -1,8 +1,10 @@
 package com.betty.tinyioc.factory;
 
 import com.betty.tinyioc.BeanDefinition;
+import com.betty.tinyioc.BeanReference;
 import com.betty.tinyioc.PropertyValue;
 
+import javax.xml.bind.ValidationEvent;
 import java.lang.reflect.Field;
 
 /**
@@ -21,21 +23,42 @@ public class AutowireCapableBeanFactory extends AbstractBeanFactory {
     @Override
     protected Object doCreateBean(BeanDefinition beanDefinition) throws Exception {
         Object bean = createBeanInstance(beanDefinition);
+        beanDefinition.setBean(bean);
         applyPropertyValues(bean, beanDefinition);
         return bean;
  }
 
-    private void applyPropertyValues(Object bean, BeanDefinition beanDefinition) throws Exception {
+    /**
+     * 创建beandefinition实例
+     * @param beanDefinition
+     * @return
+     * @throws Exception
+     */
+    @Override
+    protected Object createBeanInstance(BeanDefinition beanDefinition) throws Exception {
+        return beanDefinition.getBeanClass().newInstance();
+    }
+
+    /**
+     *初始化时，解析将真实bean注入
+     * @param bean
+     * @param beanDefinition
+     * @throws Exception
+     */
+    @Override
+    protected void applyPropertyValues(Object bean, BeanDefinition beanDefinition) throws Exception {
         for (PropertyValue propertyValue : beanDefinition.getPropertyValues().getPropertyValues()) {
             Field declaredField = bean.getClass().getDeclaredField(propertyValue.getName());
             declaredField.setAccessible(true);
-            declaredField.set(bean, propertyValue.getValue());
+            Object value = propertyValue.getValue();
+            if (value instanceof BeanReference) {
+                BeanReference beanReference = (BeanReference) value;
+                value = getBean(beanReference.getName());
+            }
+            declaredField.set(bean, value);
         }
     }
 
-    private Object createBeanInstance(BeanDefinition beanDefinition) throws Exception {
-        return beanDefinition.getBeanClass().newInstance();
-    }
 
 }
 
