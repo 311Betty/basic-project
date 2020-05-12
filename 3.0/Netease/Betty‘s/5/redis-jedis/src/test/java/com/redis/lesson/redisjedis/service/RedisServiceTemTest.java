@@ -13,20 +13,21 @@ public class RedisServiceTemTest {
     @Autowired
     private RedisServiceTem redisServiceTem;
 
-    @Test
-    public void delete() {
-        System.out.println(redisServiceTem.delete("name"));
-
-    }
-
+//存值
     @Test
     public void set() {
         redisServiceTem.set("name", "1");
     }
-
+//取值
     @Test
     public void get() {
         System.out.println(redisServiceTem.get("name").toString());
+
+    }
+//删值
+    @Test
+    public void delete() {
+        System.out.println(redisServiceTem.delete("name"));
 
     }
 }
