@@ -1,11 +1,10 @@
 package com.redis.lesson.redisjedis.service;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static com.sun.deploy.cache.Cache.exists;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 @SpringBootTest
 class RedisServiceTest {
     @Autowired

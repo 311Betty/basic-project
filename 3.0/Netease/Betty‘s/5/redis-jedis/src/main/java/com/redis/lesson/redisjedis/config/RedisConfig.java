@@ -1,8 +1,14 @@
 package com.redis.lesson.redisjedis.config;
 
+import com.redis.lesson.redisjedis.serializer.MyStringRedisSerializer;
+import jdk.management.resource.ResourceContextFactory;
+import org.omg.CORBA.portable.UnknownException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -44,6 +50,20 @@ public class RedisConfig {
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
         System.out.println(jedisPool.getResource().exists("name"));
         return jedisPool;
+    }
+
+    @Bean
+    public RedisTemplate<String ,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) throws UnknownException {
+        RedisTemplate<String, Object> objectObjectRedisTemplate = new RedisTemplate();
+        objectObjectRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        MyStringRedisSerializer myStringRedisSerializer = new MyStringRedisSerializer();
+        objectObjectRedisTemplate.setKeySerializer(stringRedisSerializer);
+        objectObjectRedisTemplate.setValueSerializer(myStringRedisSerializer);
+        objectObjectRedisTemplate.setHashKeySerializer(stringRedisSerializer);
+        objectObjectRedisTemplate.setHashValueSerializer(myStringRedisSerializer);
+        return objectObjectRedisTemplate;
+        //重写template两种序列化方式 key、hashkey
     }
 }
 
