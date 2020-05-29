@@ -18,7 +18,8 @@ import java.util.Date;
 @Component
 public class Schedule {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-@Scheduled(fixedRate = 5000)
+//@Scheduled(fixedRate = 5000)
+    @Scheduled(cron = "*/5 * * * * ?")
     public void processSchedule() {
     System.out.println("定时器执行，当前时间为"+ dateFormat.format(new Date()));
     }
